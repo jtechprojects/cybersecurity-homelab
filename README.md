@@ -6,9 +6,9 @@ This project documents the physical cybersecurity homelab I built using repurpos
 
 The purpose of the lab is to create a realistic environment where I can practice networking, system administration, virtualization, Active Directory, Linux, firewall configuration, security monitoring, and offensive and defensive cybersecurity techniques.
 
-Instead of running the entire lab from a single computer, I assigned different physical systems specific roles and use Proxmox to host several virtual machines. I also built a dedicated lab network using pfSense as the firewall and router, along with an 8-port Ethernet switch to provide wired connectivity between the physical systems.
+Instead of running the entire lab from a single computer, I assigned different physical systems specific roles and use Proxmox to host several virtual machines. I also built a dedicated lab network using pfSense as the firewall, router, and default gateway, along with an 8-port Ethernet switch to provide wired connectivity between the physical systems.
 
-This homelab serves as the foundation for my pfSense network security, SIEM and Active Directory, and Wazuh detection engineering projects.
+This homelab serves as the foundation for my network security, Active Directory, and Wazuh detection engineering projects.
 
 ## Physical Hardware
 
@@ -53,11 +53,11 @@ Proxmox allows me to manage multiple operating systems from one physical server 
 ### Dell OptiPlex 3040
 
 **Platform:** pfSense
-**Role:** Firewall and Router
+**Role:** Firewall, Router, and Default Gateway
 
-The OptiPlex 3040 is dedicated to running pfSense and serves as the primary firewall and router for my cybersecurity homelab.
+The OptiPlex 3040 is dedicated to running pfSense and serves as the firewall, router, and default gateway for my cybersecurity homelab.
 
-Rather than relying solely on my existing home router to manage the lab network, I use pfSense to route and control traffic for the lab environment.
+All physical systems and virtual machines in the lab use pfSense as their default gateway, allowing network traffic to be routed and controlled through the firewall.
 
 During the build, I initially purchased an inexpensive network interface card that was not compatible with pfSense. After troubleshooting the issue and researching hardware compatibility, I purchased replacement NICs that were properly supported and successfully completed the firewall and router configuration.
 
@@ -79,9 +79,7 @@ This system is used for:
 
 Kali Linux runs directly on the OptiPlex 3060 as a physical security testing system.
 
-Rather than operating Kali locally each time I perform testing, I can remotely access the system from my Windows 11 management workstation using SSH.
-
-I use Kali to perform controlled security testing against systems in the homelab.
+I remotely access Kali from my Windows 11 management workstation using SSH and use it to perform controlled security testing against systems within the homelab.
 
 Activities include:
 
@@ -91,25 +89,25 @@ Activities include:
 * Connectivity testing
 * Metasploit testing
 * Controlled exploitation of Metasploitable 2
-* Generating activity for firewall and SIEM analysis
+* Generating activity for firewall and security monitoring analysis
 
 ## Network Infrastructure
 
 The homelab uses a dedicated 8-port Ethernet switch to provide wired network connectivity between the physical systems.
 
-The switch connects the lab systems to the Dell OptiPlex 3040 running pfSense, which acts as the firewall and router for the lab network.
+The Dell OptiPlex 3040 running pfSense serves as the **firewall, router, and default gateway** for the lab environment. All physical systems and virtual machines use pfSense as their gateway, allowing network traffic to be routed and controlled through the firewall.
 
 The physical network consists of:
 
-* **Dell OptiPlex 3040** — pfSense firewall and router
+* **Dell OptiPlex 3040** — pfSense firewall, router, and default gateway
 * **8-port Ethernet switch** — Provides wired connectivity between the lab systems
 * **Dell OptiPlex 3050** — Windows 11 management workstation
 * **Dell OptiPlex 9010** — Proxmox virtualization server
 * **Dell OptiPlex 3060** — Kali Linux security testing workstation
 
-The virtual machines hosted by Proxmox communicate through the Proxmox server's network connection, allowing them to interact with other systems on the lab network.
+The virtual machines hosted by Proxmox communicate through the Proxmox server's network connection and also use pfSense as their default gateway.
 
-This setup gives me a dedicated environment where I can configure firewall rules, route traffic, monitor network activity, perform security testing, and observe communication between physical and virtual systems.
+This setup gives me a dedicated environment where I can route and filter traffic, configure firewall rules, monitor network activity, perform security testing, and observe communication between physical and virtual systems.
 
 ## Virtual Machines
 
@@ -117,31 +115,46 @@ The Proxmox server hosts several virtual machines that each serve a specific rol
 
 ### Windows Server 2022
 
-Used for:
+Windows Server 2022 serves as the Domain Controller for my Active Directory environment.
+
+I created a simulated business environment with multiple users assigned to different departments and security groups. I also configured Group Policy Objects (GPOs) to centrally manage resources for domain users, including department-specific mapped network drives.
+
+The Windows 10 virtual machine is joined to the Active Directory domain and uses the Windows Server 2022 Domain Controller for DNS resolution.
+
+This environment gives me hands-on experience with:
 
 * Active Directory Domain Services
-* Domain Controller configuration
-* User and computer management
+* Domain Controller administration
+* User and group management
+* Security groups
 * Group Policy
-* Windows authentication testing
+* DNS
+* Domain-joined Windows endpoints
+* Network resource management
+* Windows authentication
 * Security logging
+
+Detailed Active Directory configurations, users, security groups, GPOs, and testing are documented separately in my **Active Directory Security Lab**.
 
 ### Windows 10
 
-Used as a Windows endpoint for:
+Used as a domain-joined Windows endpoint for:
 
 * Active Directory domain testing
+* Windows authentication
 * Sysmon monitoring
 * PowerShell logging
 * Wazuh agent monitoring
 * Security testing
 * Authentication analysis
 
+The system uses the Windows Server 2022 Domain Controller for DNS resolution and pfSense as its default gateway.
+
 ### Ubuntu Server
 
-Used as the Linux server hosting Wazuh.
+Ubuntu Server is used to host my Wazuh security monitoring infrastructure.
 
-Configuring this system required me to become more comfortable with Linux server administration and working without a graphical desktop environment.
+Preparing the server required me to work with Linux server administration, package installation, networking, service management, and troubleshooting.
 
 The server provides the centralized Wazuh infrastructure used to collect and analyze security telemetry generated throughout the lab.
 
@@ -160,17 +173,17 @@ Metasploitable 2 is an intentionally vulnerable Linux system used as a controlle
 
 I use the physical Kali Linux workstation to scan and interact with Metasploitable 2 and practice controlled exploitation using Metasploit Framework.
 
-This provides a safe environment for practicing reconnaissance, vulnerability discovery, and exploitation while observing how malicious or suspicious activity appears across the lab network and security monitoring tools.
+This provides a safe environment for practicing reconnaissance, vulnerability discovery, and exploitation while observing how suspicious activity appears across the lab network and security monitoring tools.
 
 ## Learning SSH
 
 Building the homelab gave me hands-on experience using SSH as part of my security testing workflow.
 
-I used SSH to remotely connect from my Windows 11 management workstation to the physical Kali Linux machine. This allowed me to control Kali remotely and perform security testing against the virtual machines running within the Proxmox environment.
+I use SSH to remotely connect from my Windows 11 management workstation to the physical Kali Linux machine. This allows me to control Kali remotely and perform security testing against the virtual machines running within the Proxmox environment.
 
-From the Kali system, I used tools such as Nmap to scan the virtual machines, identify active hosts, discover open ports, and examine services running across the lab network.
+From the Kali system, I use tools such as Nmap to scan the virtual machines, identify active hosts, discover open ports, and examine services running across the lab network.
 
-I also used Kali to launch Metasploit Framework (`msfconsole`) and perform controlled exploitation against the intentionally vulnerable Metasploitable 2 virtual machine.
+I also use Kali to launch Metasploit Framework (`msfconsole`) and perform controlled exploitation against the intentionally vulnerable Metasploitable 2 virtual machine.
 
 This workflow gave me practical experience with:
 
@@ -183,7 +196,7 @@ This workflow gave me practical experience with:
 * Establishing sessions with a vulnerable target in a controlled environment
 * Understanding communication between physical and virtual systems
 
-Using SSH allowed me to perform much of this testing directly from my Windows 11 management workstation while the security tools and attacks were executed from the dedicated physical Kali Linux machine.
+Using SSH allows me to perform testing directly from my Windows 11 management workstation while the security tools and testing activity are executed from the dedicated physical Kali Linux machine.
 
 ## Hardware Upgrades and Troubleshooting
 
@@ -206,19 +219,18 @@ These experiences helped reinforce the importance of:
 
 ## Lab Environment
 
-| Platform / Operating System | Role                                 | System                 |
-| --------------------------- | ------------------------------------ | ---------------------- |
-| Windows 11                  | Management workstation               | Dell OptiPlex 3050     |
-| Proxmox VE                  | Virtualization host                  | Dell OptiPlex 9010     |
-| pfSense                     | Firewall / Router                    | Dell OptiPlex 3040     |
-| Kali Linux                  | Security testing workstation         | Dell OptiPlex 3060     |
-| Ethernet                    | Physical network connectivity        | 8-Port Ethernet Switch |
-| Windows Server 2022         | Active Directory / Domain Controller | Virtual Machine        |
-| Windows 10                  | Windows endpoint                     | Virtual Machine        |
-| Ubuntu Server               | Wazuh server                         | Virtual Machine        |
-| Ubuntu Desktop              | Linux workstation                    | Virtual Machine        |
-| Metasploitable 2            | Vulnerable testing target            | Virtual Machine        |
-
+| Platform / Operating System | Role                                       | System                 |
+| --------------------------- | ------------------------------------------ | ---------------------- |
+| Windows 11                  | Management workstation                     | Dell OptiPlex 3050     |
+| Proxmox VE                  | Virtualization host                        | Dell OptiPlex 9010     |
+| pfSense                     | Firewall / Router / Default Gateway        | Dell OptiPlex 3040     |
+| Kali Linux                  | Security testing workstation               | Dell OptiPlex 3060     |
+| Ethernet                    | Physical network connectivity              | 8-Port Ethernet Switch |
+| Windows Server 2022         | Active Directory / Domain Controller / DNS | Virtual Machine        |
+| Windows 10                  | Domain-joined Windows endpoint             | Virtual Machine        |
+| Ubuntu Server               | Wazuh server                               | Virtual Machine        |
+| Ubuntu Desktop              | Linux workstation                          | Virtual Machine        |
+| Metasploitable 2            | Vulnerable testing target                  | Virtual Machine        |
 
 ## Skills Developed
 
@@ -230,6 +242,9 @@ Through building and maintaining this homelab, I have gained hands-on experience
 * Windows Server 2022
 * Active Directory
 * Windows administration
+* DNS
+* Group Policy
+* Security groups
 * Linux administration
 * SSH
 * pfSense
@@ -245,17 +260,15 @@ Through building and maintaining this homelab, I have gained hands-on experience
 * Controlled exploitation
 * Wazuh
 * Sysmon
-* SIEM monitoring
-* Security testing
+* Security monitoring
 * Hardware compatibility troubleshooting
 
 ## Related Projects
 
 This homelab provides the infrastructure used for several cybersecurity projects:
 
-* **Network Security / pfSense Lab**
-* **SIEM & Active Directory Security Lab**
+* **Active Directory Security Lab**
+* **Network Security & pfSense Lab**
 * **Wazuh Detection Engineering Lab**
 
-These projects build on the same environment and focus on networking, system administration, security monitoring, detection engineering, and attack simulation.
-
+These projects build on the same environment and demonstrate progressively deeper experience with networking, Windows enterprise administration, security monitoring, attack simulation, and detection engineering.
