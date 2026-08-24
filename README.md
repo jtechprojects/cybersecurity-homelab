@@ -10,7 +10,17 @@ Instead of running the entire lab from a single computer, I assigned different p
 
 This homelab serves as the foundation for my network security, Active Directory, and Wazuh detection engineering projects.
 
+## Network Architecture
+
+![Cybersecurity Homelab Network Architecture](images/networkdiagram.png)
+
+*Network architecture of my physical and virtual cybersecurity homelab.*
+
 ## Physical Hardware
+
+![Physical Cybersecurity Homelab](images/physical-homelab.jpeg)
+
+*Physical homelab consisting of repurposed Dell OptiPlex systems and an 8-port Ethernet switch.*
 
 The lab is built using several Dell OptiPlex systems that were repurposed from my workplace.
 
@@ -37,6 +47,10 @@ I use this system to:
 
 **Platform:** Proxmox VE
 **Role:** Virtualization Host
+
+![Proxmox VE Dashboard](images/Proxmox.png)
+
+*Proxmox VE dashboard showing the virtual machines used throughout the homelab.*
 
 The OptiPlex 9010 runs Proxmox and hosts the majority of the virtual machines used in the lab.
 
