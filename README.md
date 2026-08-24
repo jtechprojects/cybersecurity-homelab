@@ -71,7 +71,7 @@ Proxmox allows me to manage multiple operating systems from one physical server 
 
 The OptiPlex 3040 is dedicated to running pfSense and serves as the firewall, router, and default gateway for my cybersecurity homelab.
 
-All physical systems and virtual machines in the lab use pfSense as their default gateway, allowing network traffic to be routed and controlled through the firewall.
+All physical and virtual systems in the lab use pfSense as their default gateway.
 
 During the build, I initially purchased an inexpensive network interface card that was not compatible with pfSense. After troubleshooting the issue and researching hardware compatibility, I purchased replacement NICs that were properly supported and successfully completed the firewall and router configuration.
 
@@ -189,7 +189,7 @@ I use the physical Kali Linux workstation to scan and interact with Metasploitab
 
 This provides a safe environment for practicing reconnaissance, vulnerability discovery, and exploitation while observing how suspicious activity appears across the lab network and security monitoring tools.
 
-## Learning SSH
+## SSH & Remote Security Testing
 
 Building the homelab gave me hands-on experience using SSH as part of my security testing workflow.
 
@@ -248,34 +248,48 @@ These experiences helped reinforce the importance of:
 
 ## Skills Developed
 
-Through building and maintaining this homelab, I have gained hands-on experience with:
+### Infrastructure & Systems
 
 * Computer hardware upgrades
 * Proxmox virtualization
 * Virtual machine management
 * Windows Server 2022
-* Active Directory
 * Windows administration
-* DNS
-* Group Policy
-* Security groups
 * Linux administration
-* SSH
+
+### Networking
+
 * pfSense
 * Routing
+* DNS
 * Firewall configuration
 * Network segmentation
 * Ethernet switching
 * Physical network design
 * Network troubleshooting
+* SSH
+
+### Active Directory
+
+* Active Directory Domain Services
+* Domain Controller administration
+* User and group management
+* Security groups
+* Group Policy
+* Domain-joined Windows endpoints
+* Network resource management
+
+### Security
+
 * Kali Linux
 * Nmap
+* Network reconnaissance
+* Port and service discovery
 * Metasploit Framework
 * Controlled exploitation
 * Wazuh
 * Sysmon
 * Security monitoring
-* Hardware compatibility troubleshooting
 
 ## Related Projects
 
