@@ -79,11 +79,11 @@ This system is used for:
 
 * Routing network traffic
 * Firewall configuration
-* Network segmentation
 * Traffic filtering
 * Firewall rules
 * Network aliases
-* SSH access restrictions
+* DHCP reservations
+* Packet capture and traffic analysis
 * Network monitoring
 
 ### Dell OptiPlex 3060
@@ -109,8 +109,8 @@ Activities include:
 
 The homelab uses a dedicated 8-port Ethernet switch to provide wired network connectivity between the physical systems.
 
-The Dell OptiPlex 3040 running pfSense serves as the **firewall, router, and default gateway** for the lab environment. All physical systems and virtual machines use pfSense as their gateway, allowing network traffic to be routed and controlled through the firewall.
-
+The Dell OptiPlex 3040 running pfSense serves as the **firewall, router, and default gateway** for the lab environment. The Dell OptiPlex 3040 running pfSense serves as the firewall, router, DHCP server, and default gateway for the lab environment. All physical systems and virtual machines use pfSense as their default gateway for traffic leaving the local network.
+Because the lab currently uses a flat network connected through an unmanaged Ethernet switch, communication between systems on the same subnet can occur directly through the switch without traversing pfSense. Traffic destined for external networks is routed through pfSense, where firewall policies can be applied.
 The physical network consists of:
 
 * **Dell OptiPlex 3040** — pfSense firewall, router, and default gateway
@@ -121,7 +121,9 @@ The physical network consists of:
 
 The virtual machines hosted by Proxmox communicate through the Proxmox server's network connection and also use pfSense as their default gateway.
 
-This setup gives me a dedicated environment where I can route and filter traffic, configure firewall rules, monitor network activity, perform security testing, and observe communication between physical and virtual systems.
+This setup gives me a dedicated environment where I can configure firewall policies, manage DHCP addressing, monitor routed network traffic, perform security testing, and analyze communication between physical and virtual systems.
+
+> **Future Improvement:** The current lab uses an unmanaged Ethernet switch and a flat network. A future upgrade to a VLAN-capable managed switch would allow the environment to be segmented into separate management, server, client, security testing, and vulnerable-target networks, with pfSense enforcing policies between them.
 
 ## Virtual Machines
 
@@ -262,9 +264,14 @@ These experiences helped reinforce the importance of:
 * pfSense
 * Routing
 * DNS
+* DHCP reservations
+* Host aliases
 * Firewall configuration
-* Network segmentation
+* Firewall rule validation
+* Packet capture
+* Traffic analysis
 * Ethernet switching
+* Layer 2 and Layer 3 networking
 * Physical network design
 * Network troubleshooting
 * SSH
