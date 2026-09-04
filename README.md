@@ -8,7 +8,9 @@ The purpose of the lab is to create a realistic environment where I can practice
 
 Instead of running the entire lab from a single computer, I assigned different physical systems specific roles and use Proxmox to host several virtual machines. I also built a dedicated lab network using pfSense as the firewall, router, and default gateway, along with an 8-port Ethernet switch to provide wired connectivity between the physical systems.
 
-This homelab serves as the foundation for my network security, Active Directory, and Wazuh detection engineering projects.
+This homelab serves as the foundation for a growing cybersecurity portfolio spanning network security, Windows enterprise administration, security monitoring and detection engineering, and malware analysis.
+
+The projects built on this environment progress from infrastructure and network security into enterprise administration, detection engineering, and malware analysis. Each featured project has its own repository with detailed technical documentation, screenshots, testing, and findings.
 
 ## Network Architecture
 
@@ -54,13 +56,17 @@ I use this system to:
 
 The OptiPlex 9010 runs Proxmox and hosts the majority of the virtual machines used in the lab.
 
-Virtual machines currently running on this system include:
+Virtual machines hosted on this system include:
 
 * Windows Server 2022
-* Windows 10
+* Windows 10 domain workstation
 * Ubuntu Server
 * Ubuntu Desktop
 * Metasploitable 2
+* Windows 10 malware-analysis VM
+* REMnux malware-analysis VM
+
+The malware-analysis VMs use a separate Proxmox-only network with no physical uplink, host IP, pfSense route, or default gateway, keeping that environment isolated from the primary homelab and public Internet.
 
 Proxmox allows me to manage multiple operating systems from one physical server while learning virtualization, resource allocation, virtual networking, and system administration.
 
@@ -109,7 +115,7 @@ Activities include:
 
 The homelab uses a dedicated 8-port Ethernet switch to provide wired network connectivity between the physical systems.
 
-The Dell OptiPlex 3040 running pfSense serves as the **firewall, router, and default gateway** for the lab environment. The Dell OptiPlex 3040 running pfSense serves as the firewall, router, DHCP server, and default gateway for the lab environment. All physical systems and virtual machines use pfSense as their default gateway for traffic leaving the local network.
+The Dell OptiPlex 3040 running pfSense serves as the **firewall, router, DHCP server, and default gateway** for the primary lab environment. All physical systems and virtual machines on the main lab network use pfSense as their default gateway for traffic leaving the local network.
 Because the lab currently uses a flat network connected through an unmanaged Ethernet switch, communication between systems on the same subnet can occur directly through the switch without traversing pfSense. Traffic destined for external networks is routed through pfSense, where firewall policies can be applied.
 The physical network consists of:
 
@@ -235,75 +241,151 @@ These experiences helped reinforce the importance of:
 
 ## Lab Environment
 
-| Platform / Operating System | Role                                       | System                 |
-| --------------------------- | ------------------------------------------ | ---------------------- |
-| Windows 11                  | Management workstation                     | Dell OptiPlex 3050     |
-| Proxmox VE                  | Virtualization host                        | Dell OptiPlex 9010     |
-| pfSense                     | Firewall / Router / Default Gateway        | Dell OptiPlex 3040     |
-| Kali Linux                  | Security testing workstation               | Dell OptiPlex 3060     |
-| Ethernet                    | Physical network connectivity              | 8-Port Ethernet Switch |
-| Windows Server 2022         | Active Directory / Domain Controller / DNS | Virtual Machine        |
-| Windows 10                  | Domain-joined Windows endpoint             | Virtual Machine        |
-| Ubuntu Server               | Wazuh server                               | Virtual Machine        |
-| Ubuntu Desktop              | Linux workstation                          | Virtual Machine        |
-| Metasploitable 2            | Vulnerable testing target                  | Virtual Machine        |
+| Platform / Operating System | Role | System |
+| --- | --- | --- |
+| Windows 11 | Management workstation | Dell OptiPlex 3050 |
+| Proxmox VE | Virtualization host | Dell OptiPlex 9010 |
+| pfSense | Firewall / Router / DHCP / Default Gateway | Dell OptiPlex 3040 |
+| Kali Linux | Security testing workstation | Dell OptiPlex 3060 |
+| Ethernet | Physical network connectivity | 8-Port Ethernet Switch |
+| Windows Server 2022 | Active Directory / Domain Controller / DNS | Virtual Machine |
+| Windows 10 | Domain-joined Windows endpoint | Virtual Machine |
+| Ubuntu Server | Wazuh server | Virtual Machine |
+| Ubuntu Desktop | Linux workstation | Virtual Machine |
+| Metasploitable 2 | Vulnerable testing target | Virtual Machine |
+| Windows 10 | Isolated malware-analysis workstation | Virtual Machine |
+| REMnux | Malware network-analysis / simulated-services system | Virtual Machine |
 
-## Skills Developed
+## Featured Cybersecurity Projects
+
+The homelab became the foundation for four dedicated cybersecurity projects. Together, they demonstrate a progression from network security and enterprise administration into security monitoring, detection engineering, and malware analysis.
+
+### 1. Network Security & pfSense Lab
+
+**Repository:** https://github.com/jtechprojects/pfsense-network-security-lab
+
+Built around the dedicated physical pfSense firewall, this project focuses on practical network-security administration and traffic analysis.
+
+**Highlights:**
+
+- Configured pfSense as the lab firewall, router, DHCP server, and default gateway.
+- Created and validated firewall rules and network aliases.
+- Performed packet capture and traffic analysis.
+- Used Kali Linux and Nmap to generate and observe controlled network activity.
+- Practiced connectivity troubleshooting and firewall-policy validation.
+
+### 2. Active Directory Security Lab
+
+**Repository:** https://github.com/jtechprojects/active-directory-security-lab
+
+Built a Windows enterprise environment using Windows Server 2022 and a domain-joined Windows 10 workstation.
+
+**Highlights:**
+
+- Configured Active Directory Domain Services and DNS.
+- Created organizational users, departments, and security groups.
+- Implemented Group Policy Objects (GPOs).
+- Configured department-specific network resources and access controls.
+- Validated authentication, policy application, and domain administration.
+
+### 3. Wazuh Detection Engineering Lab
+
+**Repository:** https://github.com/jtechprojects/wazuh-detection-engineering-lab
+
+Extended the environment into a detection-engineering and SOC-analysis lab using Wazuh, Sysmon, Windows Event Logging, and PowerShell telemetry.
+
+**Highlights:**
+
+- Centralized endpoint security telemetry in Wazuh.
+- Used Sysmon and Windows logging to investigate process and authentication activity.
+- Enabled PowerShell Script Block Logging.
+- Created custom Wazuh detection rules.
+- Mapped detections to MITRE ATT&CK techniques.
+- Tested detections against multiple execution methods.
+- Identified detection gaps and performed false-positive analysis and rule tuning.
+
+### 4. Malware Analysis Sandbox
+
+**Repository:** https://github.com/jtechprojects/malware-analysis-sandbox
+
+Built a dedicated malware-analysis environment on Proxmox with stronger isolation requirements than the primary homelab network.
+
+**Highlights:**
+
+- Created an isolated Proxmox network with no physical uplink or route to the primary homelab or Internet.
+- Deployed Windows 10 and REMnux analysis systems.
+- Configured FakeDNS and INetSim for controlled simulated network services.
+- Developed a custom Python malware-triage tool for hashing, strings extraction, PE analysis, entropy analysis, import inspection, YARA scanning, and report generation.
+- Performed manual static and controlled dynamic analysis.
+- Developed, debugged, and validated original YARA detection rules.
+- Documented negative and inconclusive findings without overstating runtime evidence.
+
+## Portfolio Progression
+
+```text
+Physical Cybersecurity Homelab
+            |
+            v
+Network Security & pfSense
+            |
+            v
+Active Directory Security
+            |
+            v
+Wazuh Detection Engineering
+            |
+            v
+Malware Analysis & YARA Detection
+```
+
+Each project builds on skills developed in the previous stages while introducing a deeper security focus. The result is a connected portfolio rather than a collection of unrelated labs.
+
+## Skills Demonstrated
 
 ### Infrastructure & Systems
 
-* Computer hardware upgrades
-* Proxmox virtualization
-* Virtual machine management
-* Windows Server 2022
-* Windows administration
-* Linux administration
+- Physical computer upgrades and hardware troubleshooting
+- Proxmox virtualization and virtual networking
+- Windows Server and Windows administration
+- Linux administration
+- VM snapshots and isolated analysis environments
 
-### Networking
+### Networking & Security
 
-* pfSense
-* Routing
-* DNS
-* DHCP reservations
-* Host aliases
-* Firewall configuration
-* Firewall rule validation
-* Packet capture
-* Traffic analysis
-* Ethernet switching
-* Layer 2 and Layer 3 networking
-* Physical network design
-* Network troubleshooting
-* SSH
+- pfSense firewall administration
+- Routing, DNS, DHCP, and Ethernet switching
+- Firewall rules and aliases
+- Nmap reconnaissance and service discovery
+- Packet capture and traffic analysis
+- SSH administration
+- Controlled exploitation with Metasploit
 
-### Active Directory
+### Identity & Enterprise Administration
 
-* Active Directory Domain Services
-* Domain Controller administration
-* User and group management
-* Security groups
-* Group Policy
-* Domain-joined Windows endpoints
-* Network resource management
+- Active Directory Domain Services
+- Domain Controller administration
+- User, group, and security-group management
+- Group Policy
+- Domain-joined Windows endpoints
+- Windows authentication and security logging
 
-### Security
+### Detection & Malware Analysis
 
-* Kali Linux
-* Nmap
-* Network reconnaissance
-* Port and service discovery
-* Metasploit Framework
-* Controlled exploitation
-* Wazuh
-* Sysmon
-* Security monitoring
+- Wazuh SIEM/XDR
+- Sysmon and Windows Event Logging
+- PowerShell logging
+- Custom detection rules and MITRE ATT&CK mapping
+- Detection testing and tuning
+- Static and dynamic malware analysis
+- Python malware-analysis automation
+- PE analysis and entropy analysis
+- YARA rule development and validation
+- REMnux, FakeDNS, and INetSim
 
-## Related Projects
+## Portfolio Summary
 
-This homelab provides the infrastructure used for several cybersecurity projects:
+What began as a project to repurpose several Dell OptiPlex systems developed into a hands-on cybersecurity environment supporting network defense, enterprise Windows administration, offensive testing, security monitoring, detection engineering, and malware analysis.
 
-* **Active Directory Security Lab**
-* **Network Security & pfSense Lab**
-* **Wazuh Detection Engineering Lab**
+The lab has given me experience not only configuring security technologies, but also validating whether they work as intended, troubleshooting failures, generating security telemetry, analyzing evidence, testing hypotheses, and documenting technical findings.
 
-These projects build on the same environment and demonstrate progressively deeper experience with networking, Windows enterprise administration, security monitoring, attack simulation, and detection engineering.
+The individual repositories above contain the detailed implementation, screenshots, testing, and analysis for each project.
